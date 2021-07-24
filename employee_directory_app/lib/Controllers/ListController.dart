@@ -7,8 +7,6 @@ import 'package:get/get.dart';
 
 class ListController extends GetxController {
   var dataIsFetching = true.obs;
-  var isError = false.obs;
-  var errorInfo = "".obs;
 
   var employeesListFetched = [].obs;
   final EmployeeRepository _employeeRepository = EmployeeRepository();
@@ -25,14 +23,9 @@ class ListController extends GetxController {
       if (tempSqlList != null && tempSqlList.length > 0) {
         print('From db');
         tempList = tempSqlList;
-
+        dataIsFetching.value = false;
         if (tempList != null && tempList.length > 0) {
-          isError.value = false;
-          dataIsFetching.value = false;
           employeesListFetched.assignAll(tempList);
-        } else {
-          isError.value = true;
-          errorInfo.value = "Something went wrong";
         }
       } else {
         print('From api');
@@ -42,20 +35,13 @@ class ListController extends GetxController {
         };
         final id = await dbHelper.insert(row);
         print('inserted row id: $id');
-
+        dataIsFetching.value = false;
         if (tempList != null && tempList.length > 0) {
-          isError.value = false;
-          dataIsFetching.value = false;
           employeesListFetched.assignAll(tempList);
-        } else {
-          isError.value = true;
-          errorInfo.value = "Something went wrong";
         }
       }
     } catch (exception) {
       dataIsFetching.value = false;
-      isError.value = true;
-      errorInfo.value = "Something went wrong";
     }
   }
 
@@ -64,17 +50,21 @@ class ListController extends GetxController {
     List<EmployeeListModal> employees = [];
     if (allRows != null) {
       //print(allRows[0]['employee_data']);
-      var info = jsonDecode(allRows[0]['employee_data']);
-      info.forEach((element) {
-        final emp = EmployeeListModal.fromJson(element);
-        employees.add(emp);
-        print(emp);
-      });
+      if (allRows.length != 0) {
+        var info = jsonDecode(allRows[0]['employee_data']);
+        if (info != null) {
+          info.forEach((element) {
+            final emp = EmployeeListModal.fromJson(element);
+            employees.add(emp);
+            print(emp);
+          });
 
-      if (employees.length > 0) {
-        return employees;
+          if (employees != null && employees.length > 0) {
+            return employees;
+          }
+          print('************************');
+        }
       }
-      print('************************');
     }
 
     return null;

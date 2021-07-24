@@ -24,9 +24,9 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Center(
             child: Text("Employee Directory",
                 style: TextStyle(
-                    color: Colors.black,
+                    color: Colors.red,
                     fontWeight: FontWeight.w500,
-                    fontSize: 20.0)),
+                    fontSize: 25.0)),
           ),
         ),
       ),

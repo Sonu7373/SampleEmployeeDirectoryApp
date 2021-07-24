@@ -41,9 +41,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                   child: Obx(() {
                     return _employeeListController.dataIsFetching.value
                         ? LoadingScreen()
-                        : _employeeListController.isError.value
-                            ? Container()
-                            : _buildEmployeeList();
+                        : _buildEmployeeList();
                   }),
                   flex: 1,
                 )
@@ -56,19 +54,27 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   }
 
   _buildEmployeeList() {
-    return ListView.builder(
-      scrollDirection: Axis.vertical,
-      itemCount: _employeeListController.employeesListFetched.length,
-      itemBuilder: (context, index) {
-        EmployeeListModal emp =
-            _employeeListController.employeesListFetched[index];
-        return eachEmployeeItem(index, emp);
-      },
-      shrinkWrap: true,
-      physics: const AlwaysScrollableScrollPhysics(),
-      //controller: _itemsScrollController,
-      padding: EdgeInsets.fromLTRB(15, 15, 15, 65),
-    );
+    if (_employeeListController.employeesListFetched != null) {
+      if (_employeeListController.employeesListFetched.length > 0) {
+        return ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: _employeeListController.employeesListFetched.length,
+          itemBuilder: (context, index) {
+            EmployeeListModal emp =
+                _employeeListController.employeesListFetched[index];
+            return eachEmployeeItem(index, emp);
+          },
+          shrinkWrap: true,
+          physics: const AlwaysScrollableScrollPhysics(),
+          //controller: _itemsScrollController,
+          padding: EdgeInsets.fromLTRB(15, 15, 15, 65),
+        );
+      } else {
+        _buildEmpty();
+      }
+    } else {
+      _buildEmpty();
+    }
   }
 
   eachEmployeeItem(int index, EmployeeListModal employee) {
@@ -178,5 +184,15 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
       return Future.value(false);
     }
     return Future.value(true);
+  }
+
+  _buildEmpty() {
+    return Center(
+      child: Text("No Results Found",
+          style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w500,
+              fontSize: 20.0)),
+    );
   }
 }
