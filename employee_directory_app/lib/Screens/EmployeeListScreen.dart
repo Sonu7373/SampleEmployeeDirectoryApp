@@ -17,7 +17,6 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   final _employeeListController = Get.find<ListController>();
   DateTime currentBackPressTime;
   FocusNode _searchFocus = FocusNode();
-  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -213,7 +212,9 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(width: 20,),
+            SizedBox(
+              width: 20,
+            ),
             Expanded(
               child: Card(
                 elevation: 0,
@@ -234,13 +235,17 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                           keyboardType: TextInputType.text,
                           maxLines: 1,
                           maxLength: 25,
-                          controller: searchController,
+                          controller: _employeeListController.searchController,
                           textInputAction: TextInputAction.done,
                           onFieldSubmitted: (value) {
                             _searchFocus.unfocus();
+                            _employeeListController.searchEmployees();
                           },
                           onChanged: (value) {
                             print("****");
+                            if (value.length == 0) {
+                              _employeeListController.getEmployees();
+                            }
                           },
                           textCapitalization: TextCapitalization.words,
                           style: TextStyle(
@@ -251,7 +256,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                             fillColor: Colors.white,
                             filled: true,
                             counterText: "",
-                            hintText: "Search here(not implemented)",
+                            hintText: "Search by name",
                             hintStyle: TextStyle(
                                 fontSize: 13,
                                 color: Colors.black,
@@ -295,6 +300,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                       GestureDetector(
                         onTap: () {
                           _searchFocus.unfocus();
+                          _employeeListController.searchEmployees();
                         },
                         child: IconButton(
                           iconSize: 20,
@@ -312,7 +318,9 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
               ),
               flex: 1,
             ),
-            SizedBox(width: 20,)
+            SizedBox(
+              width: 20,
+            )
           ],
         ),
       ),
