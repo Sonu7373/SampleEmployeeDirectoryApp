@@ -16,6 +16,8 @@ class EmployeeListScreen extends StatefulWidget {
 class _EmployeeListScreenState extends State<EmployeeListScreen> {
   final _employeeListController = Get.find<ListController>();
   DateTime currentBackPressTime;
+  FocusNode _searchFocus = FocusNode();
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -37,6 +39,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
             height: double.infinity,
             child: Column(
               children: [
+                Obx(() {
+                  return _employeeListController.dataIsFetching.value
+                      ? SizedBox()
+                      : _buildSearchBar();
+                }),
                 Expanded(
                   child: Obx(() {
                     return _employeeListController.dataIsFetching.value
@@ -193,6 +200,122 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
               color: Colors.black,
               fontWeight: FontWeight.w500,
               fontSize: 20.0)),
+    );
+  }
+
+  _buildSearchBar() {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(70.0), // here the desired height
+      child: Container(
+        color: Colors.black,
+        alignment: FractionalOffset.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(width: 20,),
+            Expanded(
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0)),
+                child: Container(
+                  alignment: FractionalOffset.center,
+                  padding: EdgeInsets.fromLTRB(5.0, 5, 10, 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: TextFormField(
+                          focusNode: _searchFocus,
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          maxLength: 25,
+                          controller: searchController,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (value) {
+                            _searchFocus.unfocus();
+                          },
+                          onChanged: (value) {
+                            print("****");
+                          },
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(
+                              fontSize: 13.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500),
+                          decoration: InputDecoration(
+                            fillColor: Colors.white,
+                            filled: true,
+                            counterText: "",
+                            hintText: "Search here(not implemented)",
+                            hintStyle: TextStyle(
+                                fontSize: 13,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w400),
+                            contentPadding:
+                                const EdgeInsets.fromLTRB(5.0, 5, 5, 5),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                            disabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                            errorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                            focusedErrorBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 0.0),
+                            ),
+                          ),
+                        ),
+                        flex: 1,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _searchFocus.unfocus();
+                        },
+                        child: IconButton(
+                          iconSize: 20,
+                          icon: Icon(
+                            Icons.search,
+                            size: 20,
+                            color: Colors.black,
+                          ),
+                          //onPressed: buttonHandler,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              flex: 1,
+            ),
+            SizedBox(width: 20,)
+          ],
+        ),
+      ),
     );
   }
 }
